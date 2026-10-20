@@ -195,3 +195,21 @@ Calculate the percentage change by subtracting the previous average from the rec
 - Business services: `src/main/java/com/vantagesystem/custchurn/service/`
 - Scheduled jobs: `src/main/java/com/vantagesystem/custchurn/job/ProcessChurnValueScheduler.java`
 - Runtime configuration: `src/main/resources/application.properties`
+
+
+
+Assumptions:
+--> Each valid updateLoginCount request represents one login and increments that employee’s count by one. Irrespective of time gap between the login requests.
+--> Churn calculaiton happens only when minimum of 4 weeks data is available.
+--> The report marks a client “Need Action” when the 2-week rate is at most -20%, the 4-week rate at most -35%, or the 12-week rate at most -40%. Confirm that these thresholds are intended.
+--> At present authentication is not implemented for HTTP endpoints.
+--> The scheduler "weeklyLoginHistoryScheduler" should not be executed more than once in a week.
+
+Improvements:
+--> Implement authentication for the HTTP endpoints.
+--> Improve the error handling and implement retry mechanism where ever required.
+--> Add the SQL connection pooling properties.
+--> The generated report can be sent over email.
+--> Implement the weekly scheduler to send one more report to notify the near expiry clients list.
+--> Update the client_details table, to note if the client license is extended.
+--> If large set of data is available, AI can be tried to determine the result in the report based on the previous experience with the clients.
