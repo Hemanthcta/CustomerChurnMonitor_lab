@@ -1,0 +1,46 @@
+select * from client_details cd;
+select * from employee_details ed;
+
+
+update client_details cd set login_weekly_history = '[3,4,1,7,4,6,7,6,20,30,10]' where cd.client_identifier = 'C1792295526';
+
+--------------------------------------------------------------------
+
+CREATE TABLE client_details (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    client_identifier VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(255),
+    address VARCHAR(255),
+    phone_number VARCHAR(255),
+    create_date TIMESTAMP NOT NULL,
+    last_update_date TIMESTAMP NULL,
+    license_start_datetime TIMESTAMP NULL,
+    license_end_datetime TIMESTAMP NULL,
+    churn_rate_2_weeks DECIMAL(5,2),
+    churn_rate_4_weeks DECIMAL(5,2),
+    churn_rate_12_weeks DECIMAL(5,2),
+    login_weekly_history VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+drop table client_details;
+
+CREATE TABLE employee_details (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    client_identifier VARCHAR(20) NOT NULL,
+    employee_id VARCHAR(255) NOT NULL,
+    create_date TIMESTAMP NOT NULL,
+    last_update_date TIMESTAMP NULL,
+    login_count_per_day INT,
+    last_login_datetime TIMESTAMP NULL,
+    PRIMARY KEY (id)
+);
+
+drop table employee_details;
+
+select * from employee_details;
+
+ALTER TABLE employee_details
+ADD CONSTRAINT fk_employee_details_client
+FOREIGN KEY (client_identifier)
+REFERENCES client_details (client_identifier);
