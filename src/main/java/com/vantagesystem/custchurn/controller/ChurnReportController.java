@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.vantagesystem.custchurn.dto.ClientSetupRequest;
 import com.vantagesystem.custchurn.dto.ClientSetupResponse;
@@ -16,6 +18,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/churnreport")
 public class ChurnReportController {
 
+	private static final Logger logger = LogManager.getLogger(ChurnReportController.class);
+
 	private final CustomerChurnService customerChurnService;
 	
 	public ChurnReportController(CustomerChurnService customerChurnService)
@@ -26,6 +30,7 @@ public class ChurnReportController {
 	@PostMapping("/calculateChurnPerc")
 	public ResponseEntity<Void> calculateChurnPerc()
 	{
+		 logger.info("Received request to calculate client churn values");
 		 customerChurnService.calculateAndUpdateChurnValue();
 		 return ResponseEntity.accepted().build();
 	}
@@ -33,6 +38,7 @@ public class ChurnReportController {
 	@PostMapping("/generateChurnReport")
 	public ResponseEntity<Void> generateChurnReport()
 	{
+		 logger.info("Received request to generate the client churn report");
 		 customerChurnService.generateChurnReport();
 		 return ResponseEntity.accepted().build();
 	}

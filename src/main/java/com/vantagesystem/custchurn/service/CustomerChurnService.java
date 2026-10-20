@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -27,6 +29,7 @@ import com.vantagesystem.custchurn.repository.EmployeeDetailsRepository;
 @Service
 public class CustomerChurnService {
 
+	private static final Logger logger = LogManager.getLogger(CustomerChurnService.class);
 
 	private final ClientDetailsRepository clientDetailsRepository;
 	private final EmployeeDetailsRepository employeeDetailsRepository;
@@ -42,6 +45,7 @@ public class CustomerChurnService {
 	public void updateWeeklyLoginHistory()
 	{
 		List<ClientDetails> clients = clientDetailsRepository.findAll();
+		logger.info("Updating weekly login history for {} client(s)", clients.size());
 
 		for (ClientDetails client : clients) {
 			Integer weeklyCount = employeeDetailsRepository.getWeeklyLoginCount(client.getClientIdentifier());
@@ -65,12 +69,14 @@ public class CustomerChurnService {
 
 			employeeDetailsRepository.resetWeeklyLoginCount(client.getClientIdentifier());
 		}
+		logger.info("Finished updating weekly login history for {} client(s)", clients.size());
 	}
 
 
 	public void calculateAndUpdateChurnValue()
 	{
 		List<ClientDetails> clients = clientDetailsRepository.findAll();
+		logger.info("Calculating churn values for {} client(s)", clients.size());
 
 		for (ClientDetails client : clients) {
 
@@ -112,11 +118,13 @@ public class CustomerChurnService {
 				clientDetailsRepository.save(client);
 			}
 		}
+		logger.info("Finished calculating churn values for {} client(s)", clients.size());
 	}
 
 
 	public void generateChurnReport()
 	{
+		logger.info("Generating client churn report");
 		try (Workbook workbook = new XSSFWorkbook()) {
 
 			Sheet sheet = workbook.createSheet("Client Churn Report");
@@ -204,11 +212,12 @@ public class CustomerChurnService {
 
 			try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
 				workbook.write(fos);
+				logger.info("Generated client churn report at {}", filePath);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Failed to write client churn report to {}", filePath, e);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Failed to generate client churn report", e);
 		}
 	}
 

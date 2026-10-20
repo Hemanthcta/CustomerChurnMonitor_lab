@@ -2,6 +2,8 @@ package com.vantagesystem.custchurn.controller;
 
 import jakarta.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,8 @@ import com.vantagesystem.custchurn.service.LoginCountService;
 @RequestMapping("/customerchurn")
 public class CustomerChurnController {
 
+	private static final Logger logger = LogManager.getLogger(CustomerChurnController.class);
+
 	private final AccountSetupService accountSetupService;
 	private final AddEmployeeService addEmpService;
 	private final LoginCountService loginCntService;
@@ -34,12 +38,14 @@ public class CustomerChurnController {
 	@PostMapping("/addAccount")
 	public ClientSetupResponse setupCustAccount(@Valid @RequestBody ClientSetupRequest request)
 	{
+		logger.info("Received request to create a client account");
 		return accountSetupService.createAccount(request);
 	}
 	
 	@PostMapping("/addEmployee")
 	public AddEmployeeResponse addEmployee(@Valid @RequestBody AddEmployeeRequest request)
 	{
+		logger.info("Received request to add an employee");
 		return addEmpService.addEmployee(request);
 	}
 	
@@ -47,6 +53,7 @@ public class CustomerChurnController {
 	@PostMapping("/updateLoginCount")
 	public ResponseEntity<Void> updateLoginCount(@Valid @RequestBody UpdateLoginCountRequest request)
 	{ 
+		logger.info("Received request to update an employee login count");
 		loginCntService.updateLoginCount(request);
 		
 		return ResponseEntity.accepted().build();

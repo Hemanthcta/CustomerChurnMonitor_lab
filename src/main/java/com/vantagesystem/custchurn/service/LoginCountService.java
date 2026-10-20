@@ -2,6 +2,8 @@ package com.vantagesystem.custchurn.service;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.vantagesystem.custchurn.dto.UpdateLoginCountRequest;
 import com.vantagesystem.custchurn.dto.UpdateLoginCountResponse;
@@ -9,6 +11,8 @@ import com.vantagesystem.custchurn.repository.EmployeeDetailsRepository;
 
 @Service
 public class LoginCountService {
+
+private static final Logger logger = LogManager.getLogger(LoginCountService.class);
 
 private final EmployeeDetailsRepository empRepo;
 	
@@ -24,14 +28,16 @@ private final EmployeeDetailsRepository empRepo;
 		int updated = 0;
 		try {
 		updated = empRepo.updateLoginCount(request.getClientIdentifier(), request.getEmployeeId(), request.getLoginDateTime());
-		if(updated == 0)
+		if(updated == 0) {
+			logger.warn("No employee login count was updated for the supplied client and employee identifiers");
 			throw new Exception("Incorrect clientID or employeeID");
+		}
 		}catch(Exception e)
 		{
-			//Add logger
-			
+			logger.error("Failed to update employee login count", e);
+			return;
 		}
-		// Add Logger
+		logger.info("Updated login count for {} employee record(s)", updated);
 	}
 	
 	

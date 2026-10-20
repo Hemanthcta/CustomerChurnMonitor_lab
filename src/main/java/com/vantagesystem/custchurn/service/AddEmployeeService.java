@@ -1,6 +1,8 @@
 package com.vantagesystem.custchurn.service;
 
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.vantagesystem.custchurn.domain.EmployeeDetails;
 import com.vantagesystem.custchurn.dto.AddEmployeeRequest;
@@ -9,6 +11,8 @@ import com.vantagesystem.custchurn.repository.EmployeeDetailsRepository;
 
 @Service
 public class AddEmployeeService {
+
+	private static final Logger logger = LogManager.getLogger(AddEmployeeService.class);
 	
 	private final EmployeeDetailsRepository empRepo;
 	
@@ -24,12 +28,14 @@ public class AddEmployeeService {
 		AddEmployeeResponse resp = null;
 		try {
 			empRepo.save(empDtls);
+			logger.info("Added employee to client {}", request.getClientIdentifier());
 		}catch(Exception e)
 		{
-			//Add logger
+			logger.error("Failed to add employee to client {}", request.getClientIdentifier(), e);
 			resp = new AddEmployeeResponse();
 			resp.setResult("Failure");
 			resp.setResultMsg("Failed to add employee details");
+			return resp;
 		}
 		resp = new AddEmployeeResponse();
 		resp.setResult("SUCCESS");
