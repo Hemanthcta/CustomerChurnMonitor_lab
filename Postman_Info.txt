@@ -1,0 +1,29 @@
+AddAccount: http://localhost:8080/customerchurn/addAccount
+
+{
+    "name": "Acme Corp",
+    "licenseStartDateTime": "2026-10-17T00:00:00",
+    "licenseEndDateTime": "2027-10-17T00:00:00",
+    "clientAddress": "123 Main Street",
+    "phoneNumber": "555-0100"
+}
+
+
+AddEmployee: http://localhost:8080/customerchurn/addEmployee
+{
+    "clientIdentifier": "C1792295526",
+    "employeeId": "1234"
+}
+
+
+UpdateLoginCount: http://localhost:8080/customerchurn/updateLoginCount
+{
+    "clientIdentifier": "C1792295526",
+    "employeeId": "1234",
+    "loginDateTime" : "2027-10-18T00:40:00"
+}
+
+
+CalculateChurnPerc: http://localhost:8080/churnreport/calculateChurnPerc
+
+GenerateChurnReport: http://localhost:8080/churnreport/generateChurnReport
