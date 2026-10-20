@@ -36,7 +36,7 @@ public class AccountSetupService {
 			logger.error("Failed to create client account", ex);
 			resp = new ClientSetupResponse();
 			resp.setResult("FAILURE");
-			resp.setResultMsg("Client details entry insert failed.");
+			resp.setResultMsg(ex.getMessage());
 			return resp;
 		}
 		

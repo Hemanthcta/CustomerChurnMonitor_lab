@@ -38,14 +38,14 @@ public class CustomerChurnController {
 	@PostMapping("/addAccount")
 	public ClientSetupResponse setupCustAccount(@Valid @RequestBody ClientSetupRequest request)
 	{
-		logger.info("Received request to create a client account");
+		logger.info("Received request to create a client account : " + request.getName());
 		return accountSetupService.createAccount(request);
 	}
 	
 	@PostMapping("/addEmployee")
 	public AddEmployeeResponse addEmployee(@Valid @RequestBody AddEmployeeRequest request)
 	{
-		logger.info("Received request to add an employee");
+		logger.info("Received request to add an employee : " + request.getEmployeeId());
 		return addEmpService.addEmployee(request);
 	}
 	

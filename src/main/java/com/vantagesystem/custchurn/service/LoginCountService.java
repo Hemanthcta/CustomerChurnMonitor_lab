@@ -24,7 +24,6 @@ private final EmployeeDetailsRepository empRepo;
 	@Async
 	public void updateLoginCount(UpdateLoginCountRequest request)
 	{
-		UpdateLoginCountResponse updateLoginCountResponse = null;
 		int updated = 0;
 		try {
 		updated = empRepo.updateLoginCount(request.getClientIdentifier(), request.getEmployeeId(), request.getLoginDateTime());

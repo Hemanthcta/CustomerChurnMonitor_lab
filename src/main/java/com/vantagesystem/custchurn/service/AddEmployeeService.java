@@ -24,9 +24,9 @@ public class AddEmployeeService {
 	
 	public AddEmployeeResponse addEmployee(AddEmployeeRequest request)
 	{
-		EmployeeDetails empDtls = employeeDtlsMapper(request);
 		AddEmployeeResponse resp = null;
 		try {
+			EmployeeDetails empDtls = employeeDtlsMapper(request);
 			empRepo.save(empDtls);
 			logger.info("Added employee to client {}", request.getClientIdentifier());
 		}catch(Exception e)
@@ -34,7 +34,7 @@ public class AddEmployeeService {
 			logger.error("Failed to add employee to client {}", request.getClientIdentifier(), e);
 			resp = new AddEmployeeResponse();
 			resp.setResult("Failure");
-			resp.setResultMsg("Failed to add employee details");
+			resp.setResultMsg(e.getMessage());
 			return resp;
 		}
 		resp = new AddEmployeeResponse();

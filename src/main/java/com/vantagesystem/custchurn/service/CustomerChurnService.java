@@ -44,6 +44,7 @@ public class CustomerChurnService {
 	@Transactional 
 	public void updateWeeklyLoginHistory()
 	{
+		try {
 		List<ClientDetails> clients = clientDetailsRepository.findAll();
 		logger.info("Updating weekly login history for {} client(s)", clients.size());
 
@@ -68,14 +69,21 @@ public class CustomerChurnService {
 			clientDetailsRepository.save(client);
 
 			employeeDetailsRepository.resetWeeklyLoginCount(client.getClientIdentifier());
+			logger.info("Finished updating weekly login history for {}", client.getClientIdentifier());
 		}
-		logger.info("Finished updating weekly login history for {} client(s)", clients.size());
+		}catch(Exception e)
+		{
+			logger.error("Failed updating weekly login history for {} ", e );
+		}
+		logger.info("Finished updating weekly login history for all clients");
 	}
 
 
 	public void calculateAndUpdateChurnValue()
 	{
-		List<ClientDetails> clients = clientDetailsRepository.findAll();
+		List<ClientDetails> clients = null;
+		try {
+		clients = clientDetailsRepository.findAll();
 		logger.info("Calculating churn values for {} client(s)", clients.size());
 
 		for (ClientDetails client : clients) {
@@ -101,22 +109,29 @@ public class CustomerChurnService {
 					churnPerc2 = calPercChange(weeklyLoginHistoryList, listSize, 4);
 					if(churnPerc2 != 0)
 						client.setChurnRate2Weeks(BigDecimal.valueOf(churnPerc2));
+					logger.info("2 week churn value for client {} is {}", client.getClientIdentifier(),churnPerc2);
 				}
 				if(listSize > 7)
 				{
 					churnPerc4 = calPercChange(weeklyLoginHistoryList, listSize, 8);
 					if(churnPerc4 != 0)
 						client.setChurnRate4Weeks(BigDecimal.valueOf(churnPerc4));
+					logger.info("4 week churn value for client {} is {}", client.getClientIdentifier(),churnPerc4);
 				}
 				if(listSize > 23)
 				{
 					churnPerc12 = calPercChange(weeklyLoginHistoryList, listSize, 24);
 					if(churnPerc12 != 0)
 						client.setChurnRate12Weeks(BigDecimal.valueOf(churnPerc12));
+					logger.info("12 week churn value for client {} is {}", client.getClientIdentifier(),churnPerc12);
 				}
 
 				clientDetailsRepository.save(client);
 			}
+		}
+		}catch(Exception e)
+		{
+			logger.error("Failed calculating the churn value : " + e);
 		}
 		logger.info("Finished calculating churn values for {} client(s)", clients.size());
 	}
@@ -199,11 +214,11 @@ public class CustomerChurnService {
 				// Auto-size columns
 				for (int col = 0; col < columns.length; col++) {
 					sheet.autoSizeColumn(col);
-				}
-
-				
+				}			
 				
 			}
+			
+			logger.info("Completed creating the excel details.");
 			
 			// Save file under resources folder
 			String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
